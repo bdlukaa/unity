@@ -26,6 +26,7 @@ import 'package:bluecherry_client/providers/app_provider_interface.dart';
 import 'package:bluecherry_client/providers/home_provider.dart';
 import 'package:bluecherry_client/providers/settings_provider.dart';
 import 'package:bluecherry_client/utils/constants.dart';
+import 'package:bluecherry_client/utils/file_saver/file_saver.dart';
 import 'package:bluecherry_client/utils/storage.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -215,6 +216,17 @@ class DownloadsManager extends UnityProvider {
     assert(event.mediaURL != null, 'There must be an url to be downloaded');
     if (event.mediaURL == null) return; // safe for release
 
+    final fileName =
+        'event_${event.id}_${event.deviceID}_${event.server.name}.mp4';
+
+    if (kIsWeb) {
+      saveFile(
+        event.mediaURL!.toString(),
+        fileName,
+      );
+      return;
+    }
+
     final home = HomeProvider.instance
       ..loading(UnityLoadingReason.downloadEvent);
 
@@ -226,8 +238,6 @@ class DownloadsManager extends UnityProvider {
     notifyListeners();
 
     final dir = SettingsProvider.instance.downloadsDirectory;
-    final fileName =
-        'event_${event.id}_${event.deviceID}_${event.server.name}.mp4';
     final downloadPath = path.join(dir, fileName);
 
     await Dio().downloadUri(

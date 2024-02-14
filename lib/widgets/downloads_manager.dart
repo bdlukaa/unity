@@ -383,6 +383,7 @@ class DownloadProgressIndicator extends StatelessWidget {
 /// The download indicator for the given event
 ///
 /// See also:
+/// 
 ///  * [EventsScreenDesktop], which uses this to display the download status
 class DownloadIndicator extends StatelessWidget {
   final Event event;
