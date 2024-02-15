@@ -56,7 +56,7 @@ class AlternativeWindowState extends State<AlternativeWindow> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => HomeProvider()),
+        ChangeNotifierProvider.value(value: HomeProvider.instance),
         ChangeNotifierProvider.value(value: DesktopViewProvider.instance),
         ChangeNotifierProvider.value(value: SettingsProvider.instance),
       ],

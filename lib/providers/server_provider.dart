@@ -206,8 +206,4 @@ class ServersProvider extends UnityProvider {
         .cast<Server>();
     super.restore(notifyListeners: notifyListeners);
   }
-
-  @override
-  // ignore: must_call_super
-  void dispose() {}
 }

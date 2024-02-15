@@ -111,6 +111,7 @@ Future<void> main(List<String> args) async {
           ServersProvider.instance = ServersProvider.dump();
           await SettingsProvider.ensureInitialized();
           await DesktopViewProvider.ensureInitialized();
+          await HomeProvider.ensureInitialized();
 
           final windowType = MultiWindowType.values[int.tryParse(args[0]) ?? 0];
           final themeMode = ThemeMode.values[int.tryParse(args[2]) ?? 0];
@@ -170,6 +171,7 @@ Future<void> main(List<String> args) async {
       ServersProvider.ensureInitialized(),
       EventsProvider.ensureInitialized(),
       UpdateManager.ensureInitialized(),
+      HomeProvider.ensureInitialized(),
     ]);
 
     /// Firebase messaging isn't available on windows nor linux
@@ -279,7 +281,9 @@ class _UnityAppState extends State<UnityApp>
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => HomeProvider()),
+        ChangeNotifierProvider<HomeProvider>.value(
+          value: HomeProvider.instance,
+        ),
         ChangeNotifierProvider<SettingsProvider>.value(
           value: SettingsProvider.instance,
         ),
