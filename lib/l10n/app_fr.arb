@@ -409,6 +409,18 @@
       }
     }
   },
+  "android": "Android",
+  "iOS": "iOS",
+  "macOS": "macOS",
+  "web": "Web",
+  "downloadForPlatform": "Download for {platform}",
+  "@downloadForPlatform": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
   "@BETA FEATURES": {},
   "betaFeatures": "Beta features",
   "matrixedViewZoom": "Matrixed view zoom",

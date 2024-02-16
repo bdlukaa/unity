@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:io';
+import 'dart:io' hide Link;
 
 import 'package:bluecherry_client/providers/settings_provider.dart';
 import 'package:bluecherry_client/providers/update_provider.dart';
@@ -29,6 +29,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/link.dart';
 
 class UpdatesSettings extends StatelessWidget {
   const UpdatesSettings({super.key});
@@ -39,7 +40,70 @@ class UpdatesSettings extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     return ListView(padding: DesktopSettings.verticalPadding, children: [
-      if (!kIsWeb) ...[
+      if (kIsWeb) ...[
+        Padding(
+          padding: DesktopSettings.horizontalPadding,
+          child: Text(
+            'Download native app',
+            style: theme.textTheme.titleMedium,
+          ),
+        ),
+        Padding(
+          padding: DesktopSettings.horizontalPadding,
+          child: Text(
+            'The web version of Bluecherry Client is limited in functionality. '
+            'Download the native app for the best experience, which includes: \n'
+            '  •  Better video performance and resource management\n'
+            '  •  Better integration with the operating system\n'
+            '  •  Matrix Zoom\n',
+            style: theme.textTheme.labelSmall,
+          ),
+        ),
+        ...<(TargetPlatform platform, String link, String locale)>[
+          (
+            TargetPlatform.linux,
+            'https://github.com/bluecherrydvr/unity/releases/download/bleeding_edge/bluecherry-linux-x86_64.deb',
+            loc.linux('')
+          ),
+          (
+            TargetPlatform.windows,
+            'https://github.com/bluecherrydvr/unity/releases/download/bleeding_edge/bluecherry-windows-setup.exe',
+            loc.windows
+          ),
+          (
+            TargetPlatform.macOS,
+            'https://github.com/bluecherrydvr/unity/releases/download/bleeding_edge/bluecherry-macos.7z',
+            loc.macOS,
+          ),
+          (
+            TargetPlatform.iOS,
+            'https://apps.apple.com/us/app/bluecherry-mobile/id1555805139',
+            loc.iOS,
+          ),
+          (
+            TargetPlatform.android,
+            'https://github.com/bluecherrydvr/unity/releases/download/bleeding_edge/bluecherry-android-arm64-v8a-release.apk',
+            loc.android,
+          ),
+        ].where((item) => defaultTargetPlatform == item.$1).map((item) {
+          return Padding(
+            padding: DesktopSettings.horizontalPadding,
+            child: Link(
+              uri: Uri.parse(item.$2),
+              builder: (context, followLink) {
+                return Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: OutlinedButton(
+                    onPressed: followLink,
+                    child: Text(loc.downloadForPlatform(item.$3)),
+                  ),
+                );
+              },
+            ),
+          );
+        }),
+        const SizedBox(height: 12.0),
+      ] else ...[
         Padding(
           padding: DesktopSettings.horizontalPadding,
           child:
@@ -51,7 +115,7 @@ class UpdatesSettings extends StatelessWidget {
             Text(
               loc.runningOn(() {
                 if (kIsWeb) {
-                  return 'WEB';
+                  return loc.web;
                 } else if (Platform.isLinux) {
                   return loc.linux(UpdateManager.linuxEnvironment.name);
                 } else if (Platform.isWindows) {
@@ -67,8 +131,6 @@ class UpdatesSettings extends StatelessWidget {
         const AppUpdateCard(),
         const AppUpdateOptions(),
       ],
-      // TODO(bdlukaa): Show option to downlaod the native client when running
-      //                on the web.
       Padding(
         padding: DesktopSettings.horizontalPadding,
         child: Text('Beta Features', style: theme.textTheme.titleMedium),
