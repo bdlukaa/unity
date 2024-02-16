@@ -152,21 +152,22 @@ class BetaFeatures extends StatelessWidget {
     final settings = context.watch<SettingsProvider>();
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      CheckboxListTile.adaptive(
-        secondary: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          foregroundColor: theme.iconTheme.color,
-          child: const Icon(Icons.crop),
+      if (!kIsWeb)
+        CheckboxListTile.adaptive(
+          secondary: CircleAvatar(
+            backgroundColor: Colors.transparent,
+            foregroundColor: theme.iconTheme.color,
+            child: const Icon(Icons.crop),
+          ),
+          title: Text(loc.matrixedViewZoom),
+          subtitle: Text(loc.matrixedViewZoomDescription),
+          value: settings.betaMatrixedZoomEnabled,
+          onChanged: (value) {
+            if (value != null) {
+              settings.betaMatrixedZoomEnabled = value;
+            }
+          },
         ),
-        title: Text(loc.matrixedViewZoom),
-        subtitle: Text(loc.matrixedViewZoomDescription),
-        value: settings.betaMatrixedZoomEnabled,
-        onChanged: (value) {
-          if (value != null) {
-            settings.betaMatrixedZoomEnabled = value;
-          }
-        },
-      ),
       ExpansionTile(
         leading: CircleAvatar(
           backgroundColor: Colors.transparent,
